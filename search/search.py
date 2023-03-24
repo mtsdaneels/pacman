@@ -86,18 +86,62 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Stack()
+    reached = list()
+    result = []
+    frontier.push(problem.getStartState())
+    pathToNode = util.Stack()
+    node = frontier.pop()
+    while not problem.isGoalState(node):
+        if node not in reached:
+            reached.append(node)
+            for successorNode, direction, cost in problem.getSuccessors(node):
+                frontier.push(successorNode)
+                tempPath = result + [direction]
+                pathToNode.push(tempPath)
+        node = frontier.pop()
+        result = pathToNode.pop()
+    return result
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Queue()
+    reached = list()
+    result = []
+    frontier.push(problem.getStartState())
+    pathToNode = util.Queue()
+    node = frontier.pop()
+    while not problem.isGoalState(node):
+        if node not in reached:
+            reached.append(node)
+            for successorNode, direction, cost in problem.getSuccessors(node):
+                frontier.push(successorNode)
+                tempPath = result + [direction]
+                pathToNode.push(tempPath)
+        node = frontier.pop()
+        result = pathToNode.pop()
+    return result
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    reached = list()
+    result = []
+    frontier.push(problem.getStartState(),0)
+    pathToNode = util.PriorityQueue()
+    node = frontier.pop()
+    while not problem.isGoalState(node):
+        if node not in reached:
+            reached.append(node)
+            for successorNode, direction, cost in problem.getSuccessors(node):
+                tempPath = result + [direction]
+                pathToNode.push(tempPath, problem.getCostOfActions(tempPath))
+                frontier.push(successorNode, problem.getCostOfActions(tempPath))
+        node = frontier.pop()
+        result = pathToNode.pop()
+    return result
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +153,23 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    reached = list()
+    result = []
+    frontier.push(problem.getStartState(),0)
+    pathToNode = util.PriorityQueue()
+    node = frontier.pop()
+    while not problem.isGoalState(node):
+        if node not in reached:
+            reached.append(node)
+            for successorNode, direction, cost in problem.getSuccessors(node):
+                tempPath = result + [direction]
+                cost = problem.getCostOfActions(tempPath) + heuristic(successorNode,problem)
+                pathToNode.push(tempPath,cost)
+                frontier.push(successorNode,cost)
+        node = frontier.pop()
+        result = pathToNode.pop()
+    return result
 
 
 # Abbreviations
